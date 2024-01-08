@@ -1,4 +1,4 @@
-import { lose, win } from "./popup.js";
+import { lose, win } from "../popup.js";
 // Refactor: extract functions
 export class Game {
     constructor() {

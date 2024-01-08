@@ -1,4 +1,4 @@
-import { lose, win } from "./popup.js";
+import { lose, win } from "../popup.js";
 import { Grid } from "./grid.js";
 
 // Refactor: extract functions

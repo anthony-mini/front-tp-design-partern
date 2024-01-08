@@ -1,5 +1,5 @@
-import { Grid } from "./grid.js";
-import { Game } from "./game.js";
+import { Grid } from "./logic/grid.js";
+import { Game } from "./logic/game.js";
 window.addEventListener("load", () => {
     let grid = new Grid();
     let game = new Game();
