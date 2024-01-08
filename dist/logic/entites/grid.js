@@ -1,4 +1,4 @@
-import { Cell } from "./entites/cell.js";
+import { Cell } from "./cell.js";
 export class Grid {
     // Nombre de cellules saines non découvertes
     get remaining() {
@@ -12,10 +12,13 @@ export class Grid {
     // Création d'une grille à l'aide de listes imbriqués)
     constructor(width, height, density) {
         this.cells = [];
+        this.bombs = [];
+        this.hits = [];
         this.width = width;
         this.height = height;
         this.density = density;
         for (let y = 0; y < this.height; y++) {
+            this.cells.push([]);
             for (let x = 0; x < this.width; x++) {
                 const bomb = Math.random() < this.density;
                 const cell = new Cell(this, x, y, bomb);

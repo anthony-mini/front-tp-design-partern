@@ -21,11 +21,12 @@ export class GridView {
             htmlGrid.appendChild(htmlRow);
             for (let x = 0; x < w; x++) {
                 // Dessin d'une cellule
+                const cell = this.grid.cells[y][x];
                 const htmlCell = document.createElement("li");
                 htmlCell.classList.add("ground_cell", "mask");
-                htmlCell.innerHTML = this.grid.bombs[y][x] ? GridView.BOMB : "";
+                htmlCell.innerHTML = cell.bomb ? GridView.BOMB : "";
                 htmlCell.onclick = () => {
-                    game.play(this, x, y);
+                    game.play(this, cell);
                 };
                 htmlCells.appendChild(htmlCell);
                 this.cells[y].push(htmlCell);
@@ -33,7 +34,12 @@ export class GridView {
         }
         //Insertion du tableau dans la page
         htmlMain.appendChild(htmlGrid);
-        game.start();
+    }
+    show(cell) {
+        this.cells[cell.y][cell.x].classList.remove("mask");
+    }
+    help(cell, hint) {
+        this.cells[cell.y][cell.x].innerHTML = hint;
     }
 }
 GridView.BOMB = '<span class="icon material-symbols-outlined">bomb</span>';

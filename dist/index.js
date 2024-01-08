@@ -1,4 +1,4 @@
-import { Grid } from "./logic/grid.js";
+import { Grid } from "./logic/entites/grid.js";
 import { Game } from "./logic/game.js";
 import { GridView } from "./ui/grid.view.js";
 window.addEventListener("load", () => {
@@ -6,4 +6,5 @@ window.addEventListener("load", () => {
     let view = new GridView(grid);
     let game = new Game(grid);
     view.draw(game);
+    game.start();
 });

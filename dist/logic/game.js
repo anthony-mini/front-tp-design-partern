@@ -6,47 +6,37 @@ export class Game {
         this._grid = grid;
     }
     // Démarrage du jeu
-    start() {
-        let w = this._grid.width;
-        let h = this._grid.height;
-        this._remaining = w * h;
-        for (let x = 0; x < w; x++) {
-            for (let y = 0; y < h; y++) {
-                if (this._grid.bombs[y][x])
-                    this._remaining -= 1;
-            }
-        }
-    }
+    // Ne fait rien pour l'instant, mais ça deviendra utile !
+    // Ex : Démarrer un timer, initialiser un score, etc.
+    start() { }
     // Gestion d'un clic sur une cellule
-    play(view, x, y) {
-        if (this._grid.hits[y][x])
+    play(view, cell) {
+        if (cell.hit)
             return;
-        const cell = view.cells[y][x];
-        cell.classList.remove("mask");
-        this._grid.hits[y][x] = true;
-        if (this._grid.bombs[y][x]) {
+        cell.hit = true;
+        view.show(cell);
+        if (cell.bomb) {
             lose();
         }
         else {
-            let n = this.risk(x, y);
+            let n = cell.risk;
             let hint = n >= 1 ? `${n}` : "";
-            view.cells[y][x].innerHTML = hint;
-            this._remaining -= 1;
-            if (this._remaining == 0) {
+            view.help(cell, hint);
+            let grid = cell.grid;
+            if (grid.remaining == 0) {
                 win();
                 return;
             }
             if (n == 0)
-                this._grid.explore(x, y, (xi, yi) => this.play(view, xi, yi));
+                this._grid.explore(cell, (near) => this.play(view, near));
         }
     }
     // Gestion d'un clic sur une cellule
-    risk(column, line) {
+    risk(cell) {
         let n = 0;
-        this._grid.explore(column, line, (x, y) => {
-            if (this._grid.bombs[y][x]) {
+        this._grid.explore(cell, (near) => {
+            if (near.bomb)
                 n += 1;
-            }
         });
         return n;
     }
