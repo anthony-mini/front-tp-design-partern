@@ -1,46 +1,30 @@
 export class Grid {
-    constructor() {
-        this.width = 20;
-        this.height = 20;
-        this.density = 0.1; // 10% de bombes;
+    // Création d'une grille à l'aide de listes imbriqués)
+    constructor(width, height, density) {
         this.bombs = [];
         this.hits = [];
-        this.cells = [];
-    }
-    // Dessin de la grille
-    draw(Game) {
-        // Création d'une grille à l'aide de listes imbriqués)
-        const htmlMain = document.getElementById("ground");
-        const htmlGrid = document.createElement("ul");
-        htmlGrid.className = "ground_grid";
+        this.width = width;
+        this.height = height;
+        this.density = density;
         for (let y = 0; y < this.height; y++) {
             this.bombs.push([]);
             this.hits.push([]);
-            this.cells.push([]);
-            //Dessin d'une ligne
-            const htmlRow = document.createElement("li");
-            const htmlCells = document.createElement("ul");
-            htmlRow.className = "ground_row";
-            htmlRow.appendChild(htmlCells);
-            htmlGrid.appendChild(htmlRow);
             for (let x = 0; x < this.width; x++) {
                 const bomb = Math.random() < this.density;
                 this.bombs[y].push(bomb);
                 this.hits[y].push(false);
-                // Dessin d'une cellule
-                const htmlCell = document.createElement("li");
-                htmlCell.classList.add("ground_cell", "mask");
-                htmlCell.innerHTML = bomb ? Grid.BOMB : "";
-                htmlCell.onclick = () => {
-                    Game.play(this, x, y);
-                };
-                htmlCells.appendChild(htmlCell);
-                this.cells[y].push(htmlCell);
             }
         }
-        //Insertion du tableau dans la page
-        htmlMain.appendChild(htmlGrid);
-        Game.start(this);
+    }
+    // Explore le voisinage d'une cellule
+    explore(column, line, visit) {
+        const xmin = Math.max(column - 1, 0);
+        const xmax = Math.min(column + 1, this.width - 1);
+        const ymin = Math.max(line - 1, 0);
+        const ymax = Math.min(line + 1, this.height - 1);
+        for (let x = xmin; x <= xmax; x++)
+            for (let y = ymin; y <= ymax; y++)
+                if (x !== column || y !== line)
+                    visit(x, y);
     }
 }
-Grid.BOMB = '<span class="icon material-symbols-outlined">bomb</span>';
