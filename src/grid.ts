@@ -1,51 +1,54 @@
-import { play, start } from "./game.js";
+import { Game } from "./game.js";
+export class Grid {
+  private static readonly BOMB =
+    '<span class="icon material-symbols-outlined">bomb</span>';
 
-export const WIDTH = 20;
-export const HEIGHT = 20;
-export const DENSITY = 0.1; // 10% de bombes;
-export const BOMB = '<span class="icon material-symbols-outlined">bomb</span>';
-export const BOMBS: boolean[][] = [];
-export const HITS: boolean[][] = [];
-export const CELLS: HTMLLIElement[][] = [];
+  width = 20;
+  height = 20;
+  density = 0.1; // 10% de bombes;
+  bombs: boolean[][] = [];
+  hits: boolean[][] = [];
+  cells: HTMLLIElement[][] = [];
 
-// Dessin de la grille
-export function draw_grid() {
-  // Création d(une grille à l'aide de listes imbriqués)
-  const htmlMain = document.getElementById("ground")!;
-  const htmlGrid = document.createElement("ul")!;
-  htmlGrid.className = "ground_grid";
+  // Dessin de la grille
 
-  for (let y = 0; y < HEIGHT; y++) {
-    BOMBS.push([]);
-    HITS.push([]);
-    CELLS.push([]);
+  draw(Game: Game) {
+    // Création d'une grille à l'aide de listes imbriqués)
+    const htmlMain = document.getElementById("ground")!;
+    const htmlGrid = document.createElement("ul")!;
+    htmlGrid.className = "ground_grid";
 
-    //Dessin d'une ligne
-    const htmlRow = document.createElement("li");
-    const htmlCells = document.createElement("ul");
+    for (let y = 0; y < this.height; y++) {
+      this.bombs.push([]);
+      this.hits.push([]);
+      this.cells.push([]);
 
-    htmlRow.className = "ground_row";
-    htmlRow.appendChild(htmlCells);
-    htmlGrid.appendChild(htmlRow);
+      //Dessin d'une ligne
+      const htmlRow = document.createElement("li");
+      const htmlCells = document.createElement("ul");
+      htmlRow.className = "ground_row";
+      htmlRow.appendChild(htmlCells);
+      htmlGrid.appendChild(htmlRow);
 
-    for (let x = 0; x < WIDTH; x++) {
-      const bomb = Math.random() < DENSITY;
-      BOMBS[y].push(bomb);
-      HITS[y].push(false);
+      for (let x = 0; x < this.width; x++) {
+        const bomb = Math.random() < this.density;
+        this.bombs[y].push(bomb);
+        this.hits[y].push(false);
 
-      // Dessin d'une cellule
-      const htmlCell = document.createElement("li");
-      htmlCell.classList.add("ground_cell", "mask");
-      htmlCell.innerHTML = bomb ? BOMB : "";
-      htmlCell.onclick = () => {
-        play(x, y);
-      };
-      htmlCells.appendChild(htmlCell);
-      CELLS[y].push(htmlCell);
+        // Dessin d'une cellule
+        const htmlCell = document.createElement("li");
+        htmlCell.classList.add("ground_cell", "mask");
+        htmlCell.innerHTML = bomb ? Grid.BOMB : "";
+        htmlCell.onclick = () => {
+          Game.play(this, x, y);
+        };
+        htmlCells.appendChild(htmlCell);
+        this.cells[y].push(htmlCell);
+      }
     }
-  }
 
-  //Insertion du tableau dans la page
-  htmlMain.appendChild(htmlGrid);
-  start();
+    //Insertion du tableau dans la page
+    htmlMain.appendChild(htmlGrid);
+    Game.start(this);
+  }
 }

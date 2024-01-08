@@ -1,68 +1,73 @@
 import { lose, win } from "./popup.js";
-import { CELLS, HITS, BOMBS, WIDTH, HEIGHT } from "./grid.js";
+import { Grid } from "./grid.js";
 
-let REMAINING = 0;
+// Refactor: extract functions
 
-// Démarrage du jeu
+export class Game {
+  private REMAINING = 0;
 
-export function start() {
-  REMAINING = WIDTH * HEIGHT;
-  for (let x = 0; x < WIDTH; x++) {
-    for (let y = 0; y < HEIGHT; y++) {
-      if (BOMBS[y][x]) REMAINING -= 1;
+  // Démarrage du jeu
+  start(grid: Grid) {
+    this.REMAINING = grid.width * grid.height;
+    for (let x = 0; x < grid.width; x++) {
+      for (let y = 0; y < grid.height; y++) {
+        if (grid.bombs[y][x]) this.REMAINING -= 1;
+      }
     }
   }
-}
 
-// Gestion des clics
-export function play(x: number, y: number) {
-  if (HITS[y][x]) return;
+  // Gestion d'un clic sur une cellule
+  play(grid: Grid, x: number, y: number) {
+    if (grid.hits[y][x]) return;
 
-  const cell = CELLS[y][x];
-  cell.classList.remove("mask");
-  HITS[y][x] = true;
-  if (BOMBS[y][x]) {
-    lose();
-  } else {
-    let n = risk(x, y);
-    let hint = n >= 1 ? `${n}` : "";
-    CELLS[y][x].innerHTML = hint;
-    REMAINING -= 1;
+    const cell = grid.cells[y][x];
+    cell.classList.remove("mask");
+    grid.hits[y][x] = true;
+    if (grid.bombs[y][x]) {
+      lose();
+    } else {
+      let n = Game.risk(grid, x, y);
+      let hint = n >= 1 ? `${n}` : "";
+      grid.cells[y][x].innerHTML = hint;
+      this.REMAINING -= 1;
 
-    if (REMAINING == 0) {
-      win();
-      return;
+      if (this.REMAINING == 0) {
+        win();
+        return;
+      }
+
+      if (n == 0) Game.explore(grid, x, y, (xi, yi) => this.play(grid, xi, yi));
     }
-
-    if (n == 0) explore(x, y, play);
   }
-}
 
-// Gestion d'un clic sur une cellule
-export function risk(column: number, line: number): number {
-  let n = 0;
-  explore(column, line, (x, y) => {
-    if (BOMBS[y][x]) {
-      n += 1;
-    }
-  });
-  return n;
-}
+  // Gestion d'un clic sur une cellule
 
-// Explore le voisinage d'une cellule
-export function explore(
-  column: number,
-  line: number,
-  visit: (x: number, y: number) => void
-) {
-  const xmin = Math.max(column - 1, 0);
-  const xmax = Math.min(column + 1, WIDTH - 1);
-  const ymin = Math.max(line - 1, 0);
-  const ymax = Math.min(line + 1, HEIGHT - 1);
+  private static risk(grid: Grid, column: number, line: number): number {
+    let n = 0;
+    Game.explore(grid, column, line, (x, y) => {
+      if (grid.bombs[y][x]) {
+        n += 1;
+      }
+    });
+    return n;
+  }
 
-  for (let x = xmin; x <= xmax; x++) {
-    for (let y = ymin; y <= ymax; y++) {
-      if (x !== column || y !== line) visit(x, y);
+  // Explore le voisinage d'une cellule
+  private static explore(
+    grid: Grid,
+    column: number,
+    line: number,
+    visit: (x: number, y: number) => void
+  ) {
+    const xmin = Math.max(column - 1, 0);
+    const xmax = Math.min(column + 1, grid.width - 1);
+    const ymin = Math.max(line - 1, 0);
+    const ymax = Math.min(line + 1, grid.height - 1);
+
+    for (let x = xmin; x <= xmax; x++) {
+      for (let y = ymin; y <= ymax; y++) {
+        if (x !== column || y !== line) visit(x, y);
+      }
     }
   }
 }

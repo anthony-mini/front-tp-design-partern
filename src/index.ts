@@ -1,8 +1,9 @@
-import { draw_grid } from "./grid.js";
-import { play } from "./game.js";
+import { Grid } from "./grid.js";
+import { Game } from "./game.js";
 
 window.addEventListener("load", () => {
-  draw_grid();
-  // @ts-ignore
-  play();
+  let grid = new Grid();
+  let game = new Game();
+  //@ts-ignore
+  grid.draw(game);
 });
