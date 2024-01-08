@@ -1,10 +1,7 @@
 import { lose, win } from "../popup.js";
 // Refactor: extract functions
 export class Game {
-    constructor(grid) {
-        this._remaining = 0;
-        this._grid = grid;
-    }
+    constructor() { }
     // Démarrage du jeu
     // Ne fait rien pour l'instant, mais ça deviendra utile !
     // Ex : Démarrer un timer, initialiser un score, etc.
@@ -28,16 +25,8 @@ export class Game {
                 return;
             }
             if (n == 0)
-                this._grid.explore(cell, (near) => this.play(view, near));
+                grid.explore(cell, (near) => this.play(view, near));
         }
     }
-    // Gestion d'un clic sur une cellule
-    risk(cell) {
-        let n = 0;
-        this._grid.explore(cell, (near) => {
-            if (near.bomb)
-                n += 1;
-        });
-        return n;
-    }
 }
+Game.INSTANCE = new Game();

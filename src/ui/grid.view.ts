@@ -16,7 +16,7 @@ export class GridView implements IGridView {
 
   // Dessin de la grille
 
-  draw(game: Game) {
+  draw() {
     // Création d'une grille à l'aide de listes imbriqués)
     const htmlMain = document.getElementById("ground")!;
     const htmlGrid = document.createElement("ul")!;
@@ -41,7 +41,7 @@ export class GridView implements IGridView {
         htmlCell.classList.add("ground_cell", "mask");
         htmlCell.innerHTML = cell.bomb ? GridView.BOMB : "";
         htmlCell.onclick = () => {
-          game.play(this, cell);
+          Game.INSTANCE.play(this, cell);
         };
         htmlCells.appendChild(htmlCell);
         this.cells[y].push(htmlCell);

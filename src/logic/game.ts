@@ -7,12 +7,9 @@ import { IGridView } from "../interfaces/i-grid-view.js";
 // Refactor: extract functions
 
 export class Game {
-  private _remaining = 0;
-  private _grid: Grid;
+  public static INSTANCE: Game = new Game();
 
-  constructor(grid: Grid) {
-    this._grid = grid;
-  }
+  private constructor() {}
 
   // Démarrage du jeu
   // Ne fait rien pour l'instant, mais ça deviendra utile !
@@ -39,17 +36,7 @@ export class Game {
         return;
       }
 
-      if (n == 0) this._grid.explore(cell, (near) => this.play(view, near));
+      if (n == 0) grid.explore(cell, (near) => this.play(view, near));
     }
-  }
-
-  // Gestion d'un clic sur une cellule
-
-  private risk(cell: Cell): number {
-    let n = 0;
-    this._grid.explore(cell, (near) => {
-      if (near.bomb) n += 1;
-    });
-    return n;
   }
 }
