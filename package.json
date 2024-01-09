@@ -1,0 +1,11 @@
+{
+  "name": "front-tp-design-partern",
+  "version": "1.0.0",
+  "description": "TP Design Patern",
+  "scripts": {
+    "start": "live-server dist --port=8080  & tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "anthony mini",
+  "license": "ISC"
+}
