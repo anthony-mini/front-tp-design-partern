@@ -1,61 +1,40 @@
-import { EItems } from "../../enums/e-items.js";
+import { EIcon } from "../../enums/e-icon.js";
+import { EItem } from "../../enums/e-item.js";
 import { Grid } from "./grid.js";
+import { Game } from "../game.js";
+import { Item } from "./item.js";
 
 export class Cell {
   readonly grid: Grid;
   readonly x: number;
   readonly y: number;
-  readonly item: EItems;
+  // readonly item: EItem;
+  item?: Item;
   hit = false;
 
-  get icon(): string {
-    return "";
-  }
-
-  get bomb(): boolean {
-    return this.item == EItems.Bomb;
-  }
-
-  get ground(): boolean {
-    return this.item == EItems.Ground;
-  }
-
   // Création d'une grille
-  constructor(grid: Grid, x: number, y: number, item?: EItems) {
+  constructor(grid: Grid, x: number, y: number, item?: EItem) {
     this.grid = grid;
     this.x = x;
     this.y = y;
-    // this.bomb = bomb;
-    this.item = item ?? EItems.Ground;
+    // this.item = item ?? EItem.Ground;
+    Game.INSTANCE.onTic.listen(() => this.item?.wakeUp(this));
   }
 
   // Gestion d'un clic sur une cellule
 
+  get icon(): EIcon {
+    return this.item?.icon ?? EIcon._;
+  }
+  get bomb(): boolean {
+    return this.item?.type == EItem.Bomb;
+  }
+  get ground(): boolean {
+    return this.item?.type == EItem.Ground;
+  }
   get risk(): number {
     let n = 0;
-    this.grid.explore(this, (near) => {
-      if (near.bomb) n += 1;
-    });
+    this.grid.explore(this, (near) => (n += near.bomb ? 1 : 0));
     return n;
-  }
-}
-
-export class CellBomb extends Cell {
-  constructor(grid: Grid, x: number, y: number) {
-    super(grid, x, y, EItems.Bomb);
-  }
-
-  get icon(): string {
-    return '<span class="icon material-symbols-outlined">bomb</span>';
-  }
-}
-
-export class CellRabbit extends Cell {
-  constructor(grid: Grid, x: number, y: number) {
-    super(grid, x, y, EItems.Rabbit);
-  }
-
-  get icon(): string {
-    return '<span class="icon material-symbols-outlined">cruelty_free</span>';
   }
 }

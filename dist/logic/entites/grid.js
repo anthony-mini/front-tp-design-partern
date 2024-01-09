@@ -1,4 +1,5 @@
 import { GridBuilder } from "../../helpers/grid.builder.js";
+import { Game } from "../game.js";
 export class Grid {
     // Nombre de cellules saines non découvertes
     get remaining() {
@@ -30,5 +31,14 @@ export class Grid {
             for (let y = ymin; y <= ymax; y++)
                 if (x !== cell.x || y !== cell.y)
                     visit(this.cells[y][x]);
+    }
+    // Inverse 2 cellules
+    swap(cell1, cell2) {
+        const item1 = cell1.item;
+        const item2 = cell2.item;
+        cell1.item = item2;
+        cell2.item = item1;
+        Game.INSTANCE.onChange.raise(cell1);
+        Game.INSTANCE.onChange.raise(cell2);
     }
 }

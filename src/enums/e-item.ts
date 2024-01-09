@@ -1,4 +1,4 @@
-export enum EItems {
+export enum EItem {
   Ground,
   Bomb,
   Rabbit,

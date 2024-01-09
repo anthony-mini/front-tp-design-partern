@@ -1,3 +1,4 @@
+import { Icon } from "../facades/icon.js";
 import { Game } from "../logic/game.js";
 export class GridView {
     constructor(grid) {
@@ -25,7 +26,7 @@ export class GridView {
                 const cell = this.grid.cells[y][x];
                 const htmlCell = document.createElement("li");
                 htmlCell.classList.add("ground_cell", "mask");
-                htmlCell.innerHTML = cell.icon;
+                htmlCell.innerHTML = Icon.of(cell);
                 htmlCell.onclick = () => {
                     Game.INSTANCE.play(cell);
                 };
@@ -35,7 +36,7 @@ export class GridView {
         }
         // Abonnement aux notifications
         Game.INSTANCE.onHit.listen((cell) => this.cells[cell.y][cell.x].classList.remove("mask"));
-        Game.INSTANCE.onHelp.listen((e) => (this.cells[e.cell.y][e.cell.x].innerHTML = e.hint));
+        Game.INSTANCE.onChange.listen((cell) => (this.cells[cell.y][cell.x].innerHTML = Icon.of(cell)));
         // Ajout de la grille au DOM
         htmlMain.appendChild(htmlGrid);
     }
