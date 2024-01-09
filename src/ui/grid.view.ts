@@ -1,12 +1,6 @@
 import { Grid } from "../logic/entites/grid.js";
 import { Game } from "../logic/game.js";
-import { Cell } from "../logic/entites/cell.js";
-import { IGridView } from "../interfaces/i-grid-view.js";
-
-export class GridView implements IGridView {
-  private static readonly BOMB =
-    '<span class="icon material-symbols-outlined">bomb</span>';
-
+export class GridView {
   readonly grid: Grid;
   readonly cells: HTMLElement[][] = [];
 
@@ -39,23 +33,26 @@ export class GridView implements IGridView {
         const cell = this.grid.cells[y][x];
         const htmlCell = document.createElement("li");
         htmlCell.classList.add("ground_cell", "mask");
-        htmlCell.innerHTML = cell.bomb ? GridView.BOMB : "";
+        htmlCell.innerHTML = cell.icon;
         htmlCell.onclick = () => {
-          Game.INSTANCE.play(this, cell);
+          Game.INSTANCE.play(cell);
         };
         htmlCells.appendChild(htmlCell);
         this.cells[y].push(htmlCell);
       }
     }
 
-    //Insertion du tableau dans la page
-    htmlMain.appendChild(htmlGrid);
-  }
-  show(cell: Cell) {
-    this.cells[cell.y][cell.x].classList.remove("mask");
-  }
+    // Abonnement aux notifications
 
-  help(cell: Cell, hint: string) {
-    this.cells[cell.y][cell.x].innerHTML = hint;
+    Game.INSTANCE.onHit.listen((cell) =>
+      this.cells[cell.y][cell.x].classList.remove("mask")
+    );
+    Game.INSTANCE.onHelp.listen(
+      (e) => (this.cells[e.cell.y][e.cell.x].innerHTML = e.hint)
+    );
+
+    // Ajout de la grille au DOM
+
+    htmlMain.appendChild(htmlGrid);
   }
 }

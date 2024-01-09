@@ -25,22 +25,18 @@ export class GridView {
                 const cell = this.grid.cells[y][x];
                 const htmlCell = document.createElement("li");
                 htmlCell.classList.add("ground_cell", "mask");
-                htmlCell.innerHTML = cell.bomb ? GridView.BOMB : "";
+                htmlCell.innerHTML = cell.icon;
                 htmlCell.onclick = () => {
-                    Game.INSTANCE.play(this, cell);
+                    Game.INSTANCE.play(cell);
                 };
                 htmlCells.appendChild(htmlCell);
                 this.cells[y].push(htmlCell);
             }
         }
-        //Insertion du tableau dans la page
+        // Abonnement aux notifications
+        Game.INSTANCE.onHit.listen((cell) => this.cells[cell.y][cell.x].classList.remove("mask"));
+        Game.INSTANCE.onHelp.listen((e) => (this.cells[e.cell.y][e.cell.x].innerHTML = e.hint));
+        // Ajout de la grille au DOM
         htmlMain.appendChild(htmlGrid);
     }
-    show(cell) {
-        this.cells[cell.y][cell.x].classList.remove("mask");
-    }
-    help(cell, hint) {
-        this.cells[cell.y][cell.x].innerHTML = hint;
-    }
 }
-GridView.BOMB = '<span class="icon material-symbols-outlined">bomb</span>';

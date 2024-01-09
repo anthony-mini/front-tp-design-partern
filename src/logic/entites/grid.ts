@@ -10,11 +10,11 @@ export class Grid {
   get remaining() {
     let n = 0;
     for (let row of this.cells)
-      for (let cell of row) if (!cell.hit && !cell.bomb) n += 1;
+      for (let cell of row) if (!cell.bomb && !cell.hit) n += 1;
     return n;
   }
 
-  // Création d'une grille à l'aide de listes imbriqués)
+  // Création d'une grille
   constructor(width: number, height: number, density: number) {
     this.width = width;
     this.height = height;
