@@ -1,9 +1,11 @@
-import { Cell } from "../logic/entites/cell.js";
+import { Cell, CellBomb, CellRabbit } from "../logic/entites/cell.js";
+import { EItems } from "../enums/e-items.js";
 export class GridBuilder {
     constructor(grid) {
         this.width = 20;
         this.height = 20;
         this.density = 0.1;
+        this.rabbits = 0.1;
         this.grid = grid;
     }
     build() {
@@ -31,8 +33,16 @@ export class GridBuilder {
             let row = [];
             for (let x = 0; x < this.width; x++) {
                 const bomb = vector[y * this.width + x];
-                const cell = new Cell(this.grid, x, y, bomb);
-                row.push(cell);
+                if (bomb) {
+                    row.push(new CellBomb(this.grid, x, y));
+                    continue;
+                }
+                const rabbit = Math.random() < this.rabbits ? EItems.Rabbit : EItems.Ground;
+                if (rabbit) {
+                    row.push(new CellRabbit(this.grid, x, y));
+                    continue;
+                }
+                row.push(new Cell(this.grid, x, y));
             }
             rows.push(row);
         }

@@ -5,11 +5,11 @@ export class Grid {
         let n = 0;
         for (let row of this.cells)
             for (let cell of row)
-                if (!cell.hit && !cell.bomb)
+                if (!cell.bomb && !cell.hit)
                     n += 1;
         return n;
     }
-    // Création d'une grille à l'aide de listes imbriqués)
+    // Création d'une grille
     constructor(width, height, density) {
         this.cells = [];
         this.width = width;
